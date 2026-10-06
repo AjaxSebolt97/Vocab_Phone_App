@@ -1,0 +1,13 @@
+This vocabulary dataset includes content from the following sources:
+
+FrequencyWords
+https://github.com/hermitdave/FrequencyWords
+Spanish word-frequency data derived from OpenSubtitles 2018.
+Content license: CC BY-SA 4.0.
+
+Wiktionary, extracted and published by Kaikki.org using Wiktextract
+https://kaikki.org/dictionary/Spanish/
+Spanish lexical entries, glosses, examples, and grammatical metadata.
+Wiktionary content is available under CC BY-SA 4.0 and the GNU Free Documentation License (GFDL).
+
+This application uses extracted and selected word data from these sources. See the linked source pages for full license terms and attribution requirements.
