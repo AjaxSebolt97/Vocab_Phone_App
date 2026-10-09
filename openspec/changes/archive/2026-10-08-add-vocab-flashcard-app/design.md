@@ -20,7 +20,7 @@ Greenfield project — no existing code, specs, or architecture to integrate wit
 ## Decisions
 
 **Content pipeline as an offline, standalone script (not part of the Android app build).**
-The pipeline reads the complete 50,000-entry FrequencyWords `es` frequency list in rank order and looks candidates up in the kaikki.org Spanish Wiktionary JSONL extract. It skips candidates without a non-empty English gloss and stops after selecting 5,000 glossed words; an example sentence is stored when present, and noun gender is required. A source-coverage check found the 5,000th glossed candidate at rank 5,546, so the full frequency list provides room to skip unmatched candidates. Output is a SQLite database file checked into the app's assets and bundled at build time via Room's pre-populated database support.
+The pipeline reads the complete 50,000-entry FrequencyWords `es` frequency list in rank order and looks candidates up in Kaikki.org's Spanish dictionary, which is extracted from English Wiktionary and provides English glosses. It skips candidates without a non-empty English gloss and stops after selecting 5,000 glossed words; an example sentence is stored when present, and noun gender is required. For the existing 5,000-word set, 44 entries absent from English Wiktionary use English translations of Spanish Wiktionary definitions. Output is a SQLite database file checked into the app's assets and bundled at build time via Room's pre-populated database support.
 - *Alternative considered*: fetch and enrich data on-device at first launch. Rejected — reintroduces a network dependency and API/ToS surface the offline-first decision was meant to avoid, and conflicts with the "no constant internet connection" requirement.
 - Each word is assigned a stable surrogate ID (not row position) so re-running the pipeline with a larger N never changes existing IDs — this is what the `vocab-dataset` extensibility and stable-identity requirements depend on.
 - kaikki.org's raw Wiktionary extract contains many senses/parts of speech per word form; the pipeline needs disambiguation logic (e.g., picking the most common/primary sense) to produce one clean entry per word. This is pipeline-internal logic, not a spec-level behavior.
@@ -35,13 +35,14 @@ Each word produces two card records (ES→EN, EN→ES) each with its own ease/in
 **Room schema sketch (illustrative, not binding on tasks/implementation):**
 ```
 words(id, rank, spanish_text, part_of_speech, gloss, example_sentence_nullable, gender_nullable)
-cards(id, word_id FK, direction[ES_TO_EN|EN_TO_ES], ease_factor, interval_days, due_date, introduced_date)
+cards(id, word_id FK, direction[ES_TO_EN|EN_TO_ES], ease_factor, repetitions, interval_days, due_date, introduced_date)
 settings(new_words_per_day, daily_review_cap)
 ```
+The repetition count is persisted because SM-2 uses it to distinguish the first and second successful reviews from later interval calculations.
 
 ## Risks / Trade-offs
 
-- [Risk] kaikki.org's Spanish dataset is ~1GB raw and will require a build-time filtering/parsing step rather than being shippable as-is → Mitigation: pipeline runs once per dataset version on a developer machine and only the small filtered output (≈5,000 words) is bundled in the APK.
+- [Risk] Kaikki.org's English Wiktionary Spanish dataset is ~1GB raw and will require a build-time filtering/parsing step rather than being shippable as-is → Mitigation: pipeline runs once per dataset version on a developer machine and only the small filtered output (≈5,000 words) is bundled in the APK.
 - [Risk] Word-sense disambiguation (picking the right gloss among many Wiktionary senses) is inherently imperfect and may need manual review/correction for some of the 5,000 words → Mitigation: pipeline output is a plain SQLite file that can be hand-edited/corrected before bundling; this is a data-quality concern, not a blocking architectural one.
 - [Risk] Attribution requirement: kaikki.org/Wiktionary content is CC-BY-SA/GFDL, which requires attribution in the app → Mitigation: include an attribution/credits screen or section referencing Wiktionary and the FrequencyWords project.
 - [Risk] SM-2, implemented from scratch, risks subtle scheduling bugs that are hard to notice because incorrect intervals still "look" plausible → Mitigation: the `spaced-repetition` spec's scenarios (Again resets short, Easy > Good interval, etc.) are concrete, testable cases to validate the implementation against.

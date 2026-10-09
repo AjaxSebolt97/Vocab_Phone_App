@@ -1,10 +1,10 @@
-# Spec Delta
+# daily-study-session Specification
 
 ## Purpose
 
 Defines the daily study loop that controls how many new words are introduced each day and how due reviews are presented alongside them, keeping learning pace sustainable and user-configurable.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Configurable new words per day
 The system SHALL let the learner configure how many new words are introduced per day, defaulting to 15.
@@ -32,7 +32,11 @@ The system SHALL introduce new words in ascending frequency-rank order, selectin
 - **THEN** it selects the lowest-ranked (most frequent) words from the dataset that have not yet been introduced to the learner
 
 ### Requirement: Configurable daily review cap
-The system SHALL let the learner configure a maximum number of due reviews presented per day. When due reviews exceed this cap, the system SHALL defer the overflow to a later day rather than discarding it.
+The system SHALL let the learner configure a maximum number of due reviews presented per day, defaulting to 50. When due reviews exceed this cap, the system SHALL defer the overflow to a later day rather than discarding it.
+
+#### Scenario: Default daily review cap
+- **WHEN** a learner has not changed the daily review cap
+- **THEN** the daily session presents up to 50 due reviews
 
 #### Scenario: Due reviews exceed the configured cap
 - **WHEN** the number of cards due on a given day exceeds the configured daily review cap

@@ -5,9 +5,14 @@ https://github.com/hermitdave/FrequencyWords
 Spanish word-frequency data derived from OpenSubtitles 2018.
 Content license: CC BY-SA 4.0.
 
-Wiktionary, extracted and published by Kaikki.org using Wiktextract
+English Wiktionary Spanish entries, extracted and published by Kaikki.org using Wiktextract
 https://kaikki.org/dictionary/Spanish/
-Spanish lexical entries, glosses, examples, and grammatical metadata.
+Spanish lexical entries with English glosses, examples, and grammatical metadata.
+Wiktionary content is available under CC BY-SA 4.0 and the GNU Free Documentation License (GFDL).
+
+For 44 entries not covered by English Wiktionary, the English gloss is a translation of a
+Spanish Wiktionary definition:
+https://es.wiktionary.org/
 Wiktionary content is available under CC BY-SA 4.0 and the GNU Free Documentation License (GFDL).
 
 This application uses extracted and selected word data from these sources. See the linked source pages for full license terms and attribution requirements.

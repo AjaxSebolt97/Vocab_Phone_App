@@ -1,0 +1,97 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "78a8d8d4c98044373f724a766b467602",
+    "entities": [
+      {
+        "tableName": "words",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `rank` INTEGER NOT NULL, `spanish_text` TEXT NOT NULL, `normalized_word` TEXT NOT NULL, `frequency` INTEGER NOT NULL, `part_of_speech` TEXT NOT NULL, `gloss` TEXT NOT NULL, `example_sentence` TEXT, `grammatical_gender` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rank",
+            "columnName": "rank",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "spanishText",
+            "columnName": "spanish_text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "normalizedWord",
+            "columnName": "normalized_word",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "frequency",
+            "columnName": "frequency",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "partOfSpeech",
+            "columnName": "part_of_speech",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gloss",
+            "columnName": "gloss",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exampleSentence",
+            "columnName": "example_sentence",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "grammaticalGender",
+            "columnName": "grammatical_gender",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_words_rank",
+            "unique": true,
+            "columnNames": [
+              "rank"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_words_rank` ON `${TABLE_NAME}` (`rank`)"
+          },
+          {
+            "name": "index_words_normalized_word",
+            "unique": true,
+            "columnNames": [
+              "normalized_word"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_words_normalized_word` ON `${TABLE_NAME}` (`normalized_word`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '78a8d8d4c98044373f724a766b467602')"
+    ]
+  }
+}

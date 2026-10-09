@@ -7,7 +7,7 @@ from typing import TextIO
 
 
 DEFAULT_FREQUENCY_INPUT = Path("data/frequency/es_frequency_candidates.tsv")
-DEFAULT_DICTIONARY_INPUT = Path("data/source/es-extract.jsonl.gz")
+DEFAULT_DICTIONARY_INPUT = Path("data/source/kaikki.org-dictionary-Spanish.jsonl.gz")
 DEFAULT_OUTPUT = Path("data/intermediate/es_dictionary_candidates.jsonl")
 TARGET_WORD_COUNT = 5000
 GENDER_TAGS = {"masculine", "feminine", "common-gender", "neuter"}
@@ -150,7 +150,10 @@ def dictionary_entry(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Match ranked Spanish frequency candidates to Wiktextract entries."
+        description=(
+            "Match ranked Spanish frequency candidates to English-gloss entries "
+            "from English Wiktionary's Spanish dictionary."
+        )
     )
     parser.add_argument("--frequency-input", type=Path, default=DEFAULT_FREQUENCY_INPUT)
     parser.add_argument("--dictionary-input", type=Path, default=DEFAULT_DICTIONARY_INPUT)

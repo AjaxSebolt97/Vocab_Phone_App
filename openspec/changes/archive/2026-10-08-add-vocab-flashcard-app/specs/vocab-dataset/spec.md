@@ -37,7 +37,7 @@ The system SHALL scan FrequencyWords candidates in descending frequency rank, sk
 - **THEN** the dataset contains the first 5,000 such candidates in frequency order
 
 ### Requirement: Build-time content pipeline
-The system SHALL provide a repeatable, offline-runnable pipeline that selects ranked words from the FrequencyWords Spanish frequency list and enriches each with definition data looked up from the kaikki.org Spanish Wiktionary extract, producing the bundled dataset asset.
+The system SHALL provide a repeatable, offline-runnable pipeline that selects ranked words from the FrequencyWords Spanish frequency list and enriches each with English definition data looked up from the Spanish dictionary extracted from English Wiktionary by Kaikki.org, producing the bundled dataset asset.
 
 #### Scenario: Pipeline produces a dataset asset
 - **WHEN** the content pipeline is run against the frequency list and dictionary source

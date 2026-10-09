@@ -1,0 +1,222 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "569f3e07b5029aec7e0e1964e8fd19b2",
+    "entities": [
+      {
+        "tableName": "words",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `rank` INTEGER NOT NULL, `spanish_text` TEXT NOT NULL, `normalized_word` TEXT NOT NULL, `frequency` INTEGER NOT NULL, `part_of_speech` TEXT NOT NULL, `gloss` TEXT NOT NULL, `example_sentence` TEXT, `grammatical_gender` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rank",
+            "columnName": "rank",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "spanishText",
+            "columnName": "spanish_text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "normalizedWord",
+            "columnName": "normalized_word",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "frequency",
+            "columnName": "frequency",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "partOfSpeech",
+            "columnName": "part_of_speech",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gloss",
+            "columnName": "gloss",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exampleSentence",
+            "columnName": "example_sentence",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "grammaticalGender",
+            "columnName": "grammatical_gender",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_words_rank",
+            "unique": true,
+            "columnNames": [
+              "rank"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_words_rank` ON `${TABLE_NAME}` (`rank`)"
+          },
+          {
+            "name": "index_words_normalized_word",
+            "unique": true,
+            "columnNames": [
+              "normalized_word"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_words_normalized_word` ON `${TABLE_NAME}` (`normalized_word`)"
+          }
+        ]
+      },
+      {
+        "tableName": "cards",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `word_id` INTEGER NOT NULL, `direction` TEXT NOT NULL, `ease_factor` REAL NOT NULL, `repetitions` INTEGER NOT NULL DEFAULT 0, `interval_days` INTEGER NOT NULL, `due_date` INTEGER NOT NULL, `introduced_date` INTEGER NOT NULL, FOREIGN KEY(`word_id`) REFERENCES `words`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wordId",
+            "columnName": "word_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "direction",
+            "columnName": "direction",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "easeFactor",
+            "columnName": "ease_factor",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repetitions",
+            "columnName": "repetitions",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "intervalDays",
+            "columnName": "interval_days",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dueDate",
+            "columnName": "due_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "introducedDate",
+            "columnName": "introduced_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_cards_word_id",
+            "unique": false,
+            "columnNames": [
+              "word_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_cards_word_id` ON `${TABLE_NAME}` (`word_id`)"
+          },
+          {
+            "name": "index_cards_word_id_direction",
+            "unique": true,
+            "columnNames": [
+              "word_id",
+              "direction"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_cards_word_id_direction` ON `${TABLE_NAME}` (`word_id`, `direction`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "words",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "word_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "settings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `new_words_per_day` INTEGER NOT NULL, `daily_review_cap` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "newWordsPerDay",
+            "columnName": "new_words_per_day",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dailyReviewCap",
+            "columnName": "daily_review_cap",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '569f3e07b5029aec7e0e1964e8fd19b2')"
+    ]
+  }
+}

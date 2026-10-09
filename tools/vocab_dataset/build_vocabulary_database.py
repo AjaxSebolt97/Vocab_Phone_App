@@ -10,7 +10,7 @@ from typing import TextIO
 DEFAULT_INPUT = Path("data/intermediate/es_primary_words.jsonl")
 DEFAULT_OUTPUT = Path("app/src/main/assets/es_vocabulary.sqlite")
 # Must equal the Room database version declared in the Android app.
-ROOM_DATABASE_VERSION = 1
+ROOM_DATABASE_VERSION = 4
 DATASET_SOURCES = (
     (
         "FrequencyWords",
@@ -19,10 +19,16 @@ DATASET_SOURCES = (
         "Spanish word-frequency data derived from OpenSubtitles 2018.",
     ),
     (
-        "Wiktionary via Kaikki.org and Wiktextract",
+        "English Wiktionary via Kaikki.org and Wiktextract",
         "https://kaikki.org/dictionary/Spanish/",
         "CC BY-SA 4.0 and GFDL (Wiktionary content)",
-        "Spanish lexical entries, glosses, examples, and grammatical metadata extracted from Wiktionary.",
+        "Spanish lexical entries with English glosses, examples, and grammatical metadata.",
+    ),
+    (
+        "Spanish Wiktionary translation overrides",
+        "https://es.wiktionary.org/",
+        "CC BY-SA 4.0 and GFDL (Wiktionary content)",
+        "English translations of 44 Spanish Wiktionary definitions not covered by English Wiktionary.",
     ),
 )
 
@@ -103,6 +109,8 @@ def create_database(entries: list[dict[str, object]], database_path: Path) -> No
     database_path.parent.mkdir(parents=True, exist_ok=True)
     with closing(sqlite3.connect(database_path)) as connection:
         with connection:
+            connection.execute("DROP TABLE IF EXISTS cards")
+            connection.execute("DROP TABLE IF EXISTS settings")
             connection.execute("DROP TABLE IF EXISTS words")
             connection.execute("DROP TABLE IF EXISTS dataset_sources")
             connection.execute(
@@ -132,6 +140,35 @@ def create_database(entries: list[dict[str, object]], database_path: Path) -> No
             connection.execute("CREATE UNIQUE INDEX index_words_rank ON words(rank)")
             connection.execute(
                 "CREATE UNIQUE INDEX index_words_normalized_word ON words(normalized_word)"
+            )
+            connection.execute(
+                """
+                CREATE TABLE cards (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    word_id INTEGER NOT NULL,
+                    direction TEXT NOT NULL,
+                    ease_factor REAL NOT NULL,
+                    repetitions INTEGER NOT NULL DEFAULT 0,
+                    interval_days INTEGER NOT NULL,
+                    due_date INTEGER NOT NULL,
+                    introduced_date INTEGER NOT NULL,
+                    FOREIGN KEY(word_id) REFERENCES words(id)
+                        ON UPDATE NO ACTION ON DELETE CASCADE
+                )
+                """
+            )
+            connection.execute("CREATE INDEX index_cards_word_id ON cards(word_id)")
+            connection.execute(
+                "CREATE UNIQUE INDEX index_cards_word_id_direction ON cards(word_id, direction)"
+            )
+            connection.execute(
+                """
+                CREATE TABLE settings (
+                    id INTEGER NOT NULL PRIMARY KEY,
+                    new_words_per_day INTEGER NOT NULL,
+                    daily_review_cap INTEGER NOT NULL
+                )
+                """
             )
             connection.execute(
                 """
